@@ -1,0 +1,13 @@
+project.lock.json
+.vs/*
+*.suo
+*.user
+*.cache
+*.Cache
+*.FileListAbsolute.txt
+*.gpState
+bin
+obj
+*.lnk
+TestResults/*
+packages/*
