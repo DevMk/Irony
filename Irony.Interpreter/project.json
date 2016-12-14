@@ -1,0 +1,38 @@
+{
+  "version": "0.0.0",
+  "dependencies": {
+    "Irony": "0.0.0"
+  },
+  "frameworks": {
+    "netstandard1.5": {
+      "imports": "dnxcore50",
+      "buildOptions": {
+        "define": [ "NETSTANDARD" ],
+        "compile": {
+          "exclude": [
+            "Ast/Statements/SpecialFormNode.cs"
+          ]
+        }
+      },
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Xml.XmlDocument": "4.3.0",
+        "System.Threading": "4.3.0",
+        "System.Threading.Thread": "4.3.0"
+      }
+    },
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Xml": "4.0.0.0",
+        "System.Numerics": "4.0.0.0"
+      },
+      "buildOptions": {
+        "compile": {
+          "exclude": [
+            "Ast/Statements/SpecialFormNode.cs"
+          ]
+        }
+      }
+    }
+  }
+}

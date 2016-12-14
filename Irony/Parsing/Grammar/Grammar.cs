@@ -76,7 +76,11 @@ namespace Irony.Parsing {
       _currentGrammar = this;
       this.CaseSensitive = caseSensitive;
       bool ignoreCase =  !this.CaseSensitive;
+#if NETSTANDARD
+      var stringComparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+#else
       var stringComparer = StringComparer.Create(System.Globalization.CultureInfo.InvariantCulture, ignoreCase);
+#endif
       KeyTerms = new KeyTermTable(stringComparer);
       //Initialize console attributes
       ConsoleTitle = Resources.MsgDefaultConsoleTitle;
@@ -476,8 +480,13 @@ namespace Irony.Parsing {
       }
       //create new term
       if (!CaseSensitive)
+#if NETSTANDARD
+        text = text.ToLowerInvariant();
+#else
         text = text.ToLower(CultureInfo.InvariantCulture);
-      string.Intern(text); 
+        string.Intern(text); 
+#endif
+
       term = new KeyTerm(text, name);
       KeyTerms[text] = term;
       return term; 

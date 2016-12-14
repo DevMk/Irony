@@ -1,0 +1,27 @@
+{
+  "version": "0.0.0",
+  "dependencies": {
+
+  },
+  "frameworks": {
+    "netstandard1.5": {
+      "imports": "dnxcore50",
+      "buildOptions": {
+        "define": [ "NETSTANDARD" ]
+      },
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Xml.XmlDocument": "4.3.0"
+      }
+    },
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Xml": "4.0.0.0",
+        "System.Numerics": "4.0.0.0"
+      },
+      "dependencies": {
+        
+      }
+    }
+  }
+}

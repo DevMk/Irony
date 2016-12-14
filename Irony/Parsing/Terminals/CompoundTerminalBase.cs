@@ -188,7 +188,11 @@ namespace Irony.Parsing {
     protected virtual void ReadPrefix(ISourceStream source, CompoundTokenDetails details) {
       if (!_prefixesFirsts.Contains(source.PreviewChar))
         return;
+#if NETSTANDARD
+      var comparisonType = CaseSensitivePrefixesSuffixes ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+#else
       var comparisonType = CaseSensitivePrefixesSuffixes ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
+#endif
       foreach (string pfx in Prefixes) {
         // Prefixes are usually case insensitive, even if language is case-sensitive. So we cannot use source.MatchSymbol here,
         // we need case-specific comparison
@@ -211,7 +215,11 @@ namespace Irony.Parsing {
 
     protected virtual void ReadSuffix(ISourceStream source, CompoundTokenDetails details) {
       if (!_suffixesFirsts.Contains(source.PreviewChar)) return;
+#if NETSTANDARD
+      var comparisonType = CaseSensitivePrefixesSuffixes ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+#else
       var comparisonType = CaseSensitivePrefixesSuffixes ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
+#endif
       foreach (string sfx in Suffixes) {
         //Suffixes are usually case insensitive, even if language is case-sensitive. So we cannot use source.MatchSymbol here,
         // we need case-specific comparison

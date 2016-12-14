@@ -28,8 +28,12 @@ namespace Irony.Parsing {
     public SourceStream(string text, bool caseSensitive, int tabWidth, SourceLocation initialLocation) {
       _text = text;
       _textLength = _text.Length; 
-      _chars = Text.ToCharArray(); 
+      _chars = Text.ToCharArray();
+#if NETSTANDARD
+      _stringComparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+#else
       _stringComparison = caseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
+#endif
       _tabWidth = tabWidth; 
       _location = initialLocation;
       _previewPosition = _location.Position;

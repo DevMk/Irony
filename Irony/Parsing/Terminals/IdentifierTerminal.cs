@@ -189,7 +189,11 @@ namespace Irony.Parsing {
         if (!CharOk(current, source.PreviewPosition == start)) 
           break; 
         //Check if we need to skip this char
+#if NETSTANDARD
+        UnicodeCategory currCat = CharUnicodeInfo.GetUnicodeCategory(current);
+#else
         UnicodeCategory currCat = char.GetUnicodeCategory(current); //I know, it suxx, we do it twice, fix it later
+#endif
         if (!this.CharsToRemoveCategories.Contains(currCat))
           outputChars.Add(current); //add it to output (identifier)
         source.PreviewPosition++;
@@ -209,7 +213,11 @@ namespace Irony.Parsing {
       if(charSet.Contains(ch)) return true;
       //check categories
       if (CharCategories.Count > 0) {
+#if NETSTANDARD
+        UnicodeCategory chCat = CharUnicodeInfo.GetUnicodeCategory(ch);
+#else
         UnicodeCategory chCat = char.GetUnicodeCategory(ch);
+#endif
         UnicodeCategoryList catList = first ? StartCharCategories : CharCategories;
         if (catList.Contains(chCat)) return true;
       }

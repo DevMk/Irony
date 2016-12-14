@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,7 +42,11 @@ namespace Irony.Parsing {
     } string _description; 
 
     public static LanguageAttribute GetValue(Type grammarClass) {
+#if NETSTANDARD
+      var attrs = grammarClass.GetTypeInfo().GetCustomAttributes(typeof(LanguageAttribute), true).ToArray();
+#else
       object[] attrs = grammarClass.GetCustomAttributes(typeof(LanguageAttribute), true);
+#endif
       if (attrs != null && attrs.Length > 0) {
         LanguageAttribute la = attrs[0] as LanguageAttribute;
         return la; 

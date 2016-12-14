@@ -17,6 +17,7 @@ using System.Text;
 using System.Reflection;
 using Irony.Parsing;
 using System.Reflection.Emit;
+using System.Linq.Expressions;
 
 namespace Irony.Ast {
 
@@ -105,13 +106,42 @@ namespace Irony.Ast {
 
     //Contributed by William Horner (wmh)
     private DefaultAstNodeCreator CompileDefaultNodeCreator(Type nodeType) {
+#if NETSTANDARD
+      ConstructorInfo constr = nodeType.GetTypeInfo().GetConstructor(Type.EmptyTypes);
+      ParameterInfo[] paramsInfo = constr.GetParameters();
+
+      // parameter of type object[] named args
+      ParameterExpression paramExpr = Expression.Parameter(typeof(object[]), "args");
+
+      var argsExpr = new Expression[paramsInfo.Length];
+
+      // get each arg from object[] args
+      // and create SomeType arg expression
+      // eg. (int parameterA)
+      for (int i = 0; i < paramsInfo.Length; ++i)
+      {
+        ConstantExpression index = Expression.Constant(i);
+        Type argType = paramsInfo[i].ParameterType;
+        BinaryExpression accessprExpr = Expression.ArrayIndex(paramExpr, index);
+        UnaryExpression castExpr = Expression.Convert(accessprExpr, argType);
+        argsExpr[i] = castExpr;
+      }
+
+      // new Constructor(param1, param2, ...)
+
+      NewExpression newExpr = Expression.New(constr, argsExpr);
+      // create lambda in order to compile expression
+      LambdaExpression lambda = Expression.Lambda(typeof(DefaultAstNodeCreator), newExpr, paramExpr);
+      var result = (DefaultAstNodeCreator)lambda.Compile();
+#else
       ConstructorInfo constr = nodeType.GetConstructor(Type.EmptyTypes);
       DynamicMethod method = new DynamicMethod("CreateAstNode", nodeType, Type.EmptyTypes);
       ILGenerator il = method.GetILGenerator();
       il.Emit(OpCodes.Newobj, constr);
       il.Emit(OpCodes.Ret);
       var result  = (DefaultAstNodeCreator) method.CreateDelegate(typeof(DefaultAstNodeCreator));
-      return result; 
+#endif
+      return result;
     }
 
 /*

@@ -25,10 +25,16 @@ namespace Irony.Parsing {
       if (parseTree == null || parseTree.Root == null) return string.Empty;
       var xdoc = ToXmlDocument(parseTree); 
       StringWriter sw = new StringWriter();
+#if NETSTANDARD
+      var xw = XmlWriter.Create(sw);
+      xdoc.WriteTo(xw);
+      xw.Flush();
+#else
       XmlTextWriter xw = new XmlTextWriter(sw);
       xw.Formatting = Formatting.Indented;
       xdoc.WriteTo(xw);
       xw.Flush();
+#endif
       return sw.ToString();
     }
     
